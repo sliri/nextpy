@@ -3,6 +3,7 @@
 
 
 def intersection(list_1, list_2):
+    """Get two lists,return the items which appear in both """
     return [item for item in set(list_1) if item in set(list_2)]
 
 
