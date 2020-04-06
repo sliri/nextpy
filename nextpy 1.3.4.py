@@ -8,4 +8,3 @@ increased_letter = ''.join(list(map(lambda letter: chr(ord('a')+(ord(letter) + 2
 
 if __name__ == "__main__":
     print(increased_letter)
-" TODO- modulu 26 and loswer case only convertion!"
