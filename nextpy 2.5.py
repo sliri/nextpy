@@ -9,20 +9,29 @@ class Animal:
     zoo_name = "Hayaton"
 
     def __init__(self, name, hunger=0):
+        """Init the animal class.
+
+        Args:
+        name(str):  Animal name
+        hunger(int): Hunger level of the animal"""
         self._name = name
         self._hunger = hunger
         Animal.zoo_lst.append(self)
 
     def get_name(self):
+        """Get the animal name."""
         return self._name
 
     def is_hungry(self):
+        """Check if animal is hungry."""
         return self._hunger > 0
 
     def feed(self):
+        """Feed the animal."""
         self._hunger -= 1
 
     def talk(self):
+        """animal talk function."""
         pass
 
 
