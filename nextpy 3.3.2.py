@@ -21,7 +21,7 @@ def send_invitation(name, age):
         if int(age) < 18:
             raise UnderAge(age)
     except UnderAge as e:
-        print('Function expected a positive integer under 18 and got %s' %age)
+        print('Function expected a positive integer under 18 and got %s' % age)
     else:
         print("You should send an invite to " + name)
 
