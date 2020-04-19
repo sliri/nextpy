@@ -4,41 +4,6 @@
 import string
 
 
-def invalid_chars(input_str):
-    """ Get a string, return the invalid set of chars in it as string.
-    :type input_str: str
-    """
-    returned_str = str()
-    for char in input_str:
-        if char.isalpha() or char.isdigit() or char == '_':
-            pass
-        else:
-            returned_str += char
-    return ''.join(set(returned_str))
-
-
-def missing_chars(input_str):
-    """ Get a string, find the missing set of chars in it as string.
-
-    The string must contain one small letter, one capital letter, a number and a special char
-    :type input_str: string
-    """
-    lower_string = ''.join([char for char in input_str if char.islower()])
-    upper_string = ''.join([char for char in input_str if char.isupper()])
-    digit_string = ''.join([char for char in input_str if char.isdigit()])
-    special_string = ''.join([char for char in input_str if char in string.punctuation])
-    lower_error = upper_error = digit_error = special_error = str()
-    if not lower_string:
-        lower_error = 'missing lower letter\n'
-    if not upper_string:
-        upper_error = 'missing upper letter\n'
-    if not digit_string:
-        digit_error = 'missing digit\n'
-    if not special_string:
-        special_error = 'missing special letter\n'
-    return lower_error + upper_error + digit_error + special_error
-
-
 class UsernameContainsIllegalCharacter(Exception):
     """A username validity exception class."""
 
@@ -46,10 +11,22 @@ class UsernameContainsIllegalCharacter(Exception):
         """Initialize the username."""
         self.username = username
 
+    def invalid_chars(self):
+        """ Get a string, return the invalid set of chars in it as string.
+        :type
+        """
+        bad_char = str()
+        for char in self.username:
+            if char.isalpha() or char.isdigit() or char == '_':
+                continue
+            else:
+                bad_char = char
+                break
+        return [''.join(bad_char), self.username.index(bad_char)]
+
     def __str__(self):
         """The class description string"""
-        return "Illegal chars in username! You used the chars %s. Only alphanumeric or '_' are allowed." % \
-               (invalid_chars(self.username))
+        return "The username contains an illegal character \"""%s\" at index %s" %(self.invalid_chars()[0] ,self.invalid_chars()[1])
 
 
 class UsernameTooShort(Exception):
@@ -61,7 +38,7 @@ class UsernameTooShort(Exception):
 
     def __str__(self):
         """The class description string"""
-        return "username too short! You used only %s chars minimum is 3." % len(self.username)
+        return "The username is too short. You used only %s chars minimum is 3." % len(self.username)
 
 
 class UsernameTooLong(Exception):
@@ -73,20 +50,63 @@ class UsernameTooLong(Exception):
 
     def __str__(self):
         """The class description string"""
-        return "username too long! You used %s chars maximum is 16." % len(self.username)
+        return "The username is too long. You used %s chars maximum is 16." % len(self.username)
 
 
 class PasswordMissingCharacter(Exception):
     """A password validity exception class."""
 
     def __init__(self, password):
-        """Initialize the username."""
+        """Initialize the password."""
         self.password = password
 
     def __str__(self):
         """The class description string"""
-        return "The password must contain one small letter, one capital letter" \
-               " a number and punctuation.\n%s" % (missing_chars(self.password))
+        return "The password is missing a character"
+
+
+class PasswordMissingCharacterLower(PasswordMissingCharacter):
+    """A password validity exception class."""
+
+    def __init__(self, password):
+        PasswordMissingCharacter.__init__(self, password)
+
+    def __str__(self):
+        """The class description string"""
+        return PasswordMissingCharacter.__str__(self) + ' ' + '(Lower)'
+
+
+class PasswordMissingCharacterUpper(PasswordMissingCharacter):
+    """A password validity exception class."""
+
+    def __init__(self, password):
+        PasswordMissingCharacter.__init__(self, password)
+
+    def __str__(self):
+        """The class description string"""
+        return PasswordMissingCharacter.__str__(self) + ' ' + '(Upper)'
+
+
+class PasswordMissingCharacterDigit(PasswordMissingCharacter):
+    """A password validity exception class."""
+
+    def __init__(self, password):
+        PasswordMissingCharacter.__init__(self, password)
+
+    def __str__(self):
+        """The class description string"""
+        return PasswordMissingCharacter.__str__(self) + ' ' + '(Digit)'
+
+
+class PasswordMissingCharacterSpecial(PasswordMissingCharacter):
+    """A password validity exception class."""
+
+    def __init__(self, password):
+        PasswordMissingCharacter.__init__(self, password)
+
+    def __str__(self):
+        """The class description string"""
+        return PasswordMissingCharacter.__str__(self) + ' ' + '(Special)'
 
 
 class PasswordTooShort(Exception):
@@ -98,7 +118,7 @@ class PasswordTooShort(Exception):
 
     def __str__(self):
         """The class description string"""
-        return "password too short! You used only %s chars minimum is 8." % len(self.password)
+        return "The password is too short. You used only %s chars minimum is 8." % len(self.password)
 
 
 class PasswordTooLong(Exception):
@@ -110,19 +130,25 @@ class PasswordTooLong(Exception):
 
     def __str__(self):
         """The class description string"""
-        return "username too long! You used %s chars maximum is 40." % len(self.password)
+        return "The password is too long. You used %s chars maximum is 40." % len(self.password)
 
 
 def check_input(username, password):
     try:
-        if invalid_chars(username):
+        if [char for char in username if not(char.isalpha() or char.isdigit() or char == '_')]:
             raise UsernameContainsIllegalCharacter(username)
         elif len(username) < 3:
             raise UsernameTooShort(username)
         elif len(username) > 16:
             raise UsernameTooLong(username)
-        elif missing_chars(password):
-            raise PasswordMissingCharacter(password)
+        elif not ''.join([char for char in password if char.islower()]):
+            raise PasswordMissingCharacterLower(password)
+        elif not ''.join([char for char in password if char.isupper()]):
+            raise PasswordMissingCharacterUpper(password)
+        elif not ''.join([char for char in password if char.isdigit()]):
+            raise PasswordMissingCharacterDigit(password)
+        elif not ''.join([char for char in password if char in string.punctuation]):
+            raise PasswordMissingCharacterSpecial(password)
         elif len(password) < 8:
             raise PasswordTooShort(password)
         elif len(password) > 40:
@@ -134,8 +160,14 @@ def check_input(username, password):
         print(UsernameTooShort(username))
     except UsernameTooLong as e:
         print(UsernameTooLong(username))
-    except PasswordMissingCharacter as e:
-        print(PasswordMissingCharacter(password))
+    except PasswordMissingCharacterLower as e:
+        print(PasswordMissingCharacterLower(password))
+    except PasswordMissingCharacterUpper as e:
+        print(PasswordMissingCharacterUpper(password))
+    except PasswordMissingCharacterDigit as e:
+        print(PasswordMissingCharacterDigit(password))
+    except PasswordMissingCharacterSpecial as e:
+        print(PasswordMissingCharacterSpecial(password))
     except PasswordTooShort as e:
         print(PasswordTooShort(password))
     except PasswordTooLong as e:
@@ -145,5 +177,18 @@ def check_input(username, password):
 
 
 if __name__ == "__main__":
-    check_input("usyuyit", 'rE&r1')
+    check_input("1", "2")
+    check_input("0123456789ABCDEFG", "2")
+    check_input("A_a1.", "12345678")
+    check_input("A_1", "2")
+    check_input("A_1", "ThisIsAQuiteLongPasswordAndHonestlyUnnecessary")
+    check_input("A_1", "abcdefghijklmnop")
+    check_input("A_1", "ABCDEFGHIJLKMNOP")
+    check_input("A_1", "ABCDEFGhijklmnop")
+    check_input("A_1", "4BCD3F6h1jk1mn0p")
+    check_input("A_1", "4BCD3F6.1jk1mn0p")
+    check_input("A_1", "abcdefghijklmnop")
+    check_input("A_1", "ABCDEFGHIJLKMNOP")
+    check_input("A_1", "ABCDEFGhijklmnop")
+    check_input("A_1", "4BCD3F6h1jk1mn0p")
 
