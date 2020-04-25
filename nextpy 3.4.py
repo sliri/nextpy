@@ -191,4 +191,3 @@ if __name__ == "__main__":
     check_input("A_1", "ABCDEFGHIJLKMNOP")
     check_input("A_1", "ABCDEFGhijklmnop")
     check_input("A_1", "4BCD3F6h1jk1mn0p")
-
