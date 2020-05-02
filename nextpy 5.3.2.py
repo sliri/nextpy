@@ -1,8 +1,6 @@
 # 5.3.2
 ################
 
-import itertools
-
 
 class MusicNotes:
     def __init__(self):
