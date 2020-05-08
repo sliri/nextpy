@@ -4,7 +4,7 @@
 import tkinter as tk
 
 
-def open_image(image_label):
+def open_image():
     img = tk.PhotoImage(file='capture.png')
     image_label.image = img
     image_label.configure(image=img)
@@ -17,6 +17,6 @@ label.pack()
 image_label = tk.Label(text='this is image label')
 image_label.pack(side="bottom", fill="both", expand='yes')
 
-button = tk.Button(text ="click to find out",command=lambda:open_image(image_label))
+button = tk.Button(text="click to find out", command=lambda: open_image())
 button.pack()
 window.mainloop()
